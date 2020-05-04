@@ -11,14 +11,10 @@ import 'package:ministore/src/models/item_model.dart';
 class ItemProvider {
 
   final String _url = 'https://fluttervarios-da5a1.firebaseio.com';
-  String _uploadPreset;
-  String _cloudinaryKey;
+  final _keys = Keys();
 
   ItemProvider(){
-    final keys = Keys();
-    keys.initKeys();
-    _uploadPreset = keys.cloudinaryUploadPreset;
-    _cloudinaryKey = keys.cloudinaryKey;
+    _keys.initKeys();
   }
 
   Future<bool> createItem( ItemModel item ) async{
@@ -71,7 +67,10 @@ class ItemProvider {
 
   Future<String> uploadImage( File image ) async {
 
-    final url = Uri.parse('https://api.cloudinary.com/v1_1/$_cloudinaryKey/image/upload?upload_preset=$_uploadPreset');
+    final url = Uri.parse('https://api.cloudinary.com/v1_1/'
+      '${ _keys.cloudinaryKey }/image/upload?'
+      'upload_preset=${_keys.cloudinaryUploadPreset }');
+
     final mimeType = mime(image.path).split('/'); // image/jpeg
 
     final imageUploadRequest = http.MultipartRequest(

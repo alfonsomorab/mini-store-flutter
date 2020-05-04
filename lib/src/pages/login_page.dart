@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ministore/src/blocs/provider.dart';
 import 'package:ministore/src/keys/keys.dart';
 import 'package:ministore/src/providers/user_provider.dart';
+import 'package:ministore/src/shared_preferences/user_preferences.dart';
 
 class LoginPage extends StatelessWidget {
 

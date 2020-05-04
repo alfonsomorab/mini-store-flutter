@@ -18,6 +18,8 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+
+  final preferences = UserPreferences();
   @override
   Widget build(BuildContext context) {
 
