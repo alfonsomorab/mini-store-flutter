@@ -3,6 +3,7 @@ import 'package:ministore/src/blocs/provider.dart';
 import 'package:ministore/src/keys/keys.dart';
 import 'package:ministore/src/providers/user_provider.dart';
 import 'package:ministore/src/shared_preferences/user_preferences.dart';
+import 'package:ministore/src/utils/util.dart';
 
 class LoginPage extends StatelessWidget {
 
@@ -200,11 +201,22 @@ class LoginPage extends StatelessWidget {
 
   }
 
-  _login(BuildContext context, LoginBloc bloc){
+  _login(BuildContext context, LoginBloc bloc) async {
 
-    userProvider.loginUser(bloc.email, bloc.password);
+    final info = await userProvider.loginUser(bloc.email, bloc.password);
 
-    //Navigator.pushReplacementNamed(context, 'home');
+    if ( info['ok'] ) {
+      Navigator.pushReplacementNamed(context, 'home');
+    }
+    else{
+      // Show dialog
+      showSimpleDialog(
+        context: context,
+        title: 'Error al iniciar sesión',
+        message: 'Intenta de nuevo mas tarde, code: ${ info['message'] }'
+      );
+    }
+
 
   }
 }

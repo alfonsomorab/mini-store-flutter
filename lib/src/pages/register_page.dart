@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ministore/src/blocs/provider.dart';
 import 'package:ministore/src/providers/user_provider.dart';
+import 'package:ministore/src/utils/util.dart';
 
 class RegisterPage extends StatelessWidget {
 
@@ -198,11 +199,20 @@ class RegisterPage extends StatelessWidget {
 
   }
 
-  _register(BuildContext context, LoginBloc bloc){
+  _register(BuildContext context, LoginBloc bloc) async {
 
-    userProvider.createUser(bloc.email, bloc.password);
+    final info = await userProvider.createUser(bloc.email, bloc.password);
 
-    //Navigator.pushReplacementNamed(context, 'home');
-
+    if ( info['ok'] ) {
+      Navigator.pushReplacementNamed(context, 'home');
+    }
+    else{
+      // Show dialog
+      showSimpleDialog(
+        context: context,
+        title: 'Error al registrar su cuenta',
+        message: 'Intenta de nuevo mas tarde, code: ${ info['message'] }'
+      );
+    }
   }
 }

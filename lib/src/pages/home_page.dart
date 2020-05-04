@@ -92,7 +92,7 @@ class HomePage extends StatelessWidget {
     else{
       return FadeInImage(
         image: NetworkImage(item.photoUrl),
-        placeholder: AssetImage('loading.gif'),
+        placeholder: AssetImage('assets/loading.gif'),
         fit: BoxFit.cover
       );
     }
