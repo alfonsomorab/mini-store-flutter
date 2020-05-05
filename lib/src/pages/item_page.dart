@@ -2,8 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:ministore/src/blocs/item_bloc.dart';
+import 'package:ministore/src/blocs/provider.dart';
 import 'package:ministore/src/models/item_model.dart';
-import 'package:ministore/src/providers/item_provider.dart';
 import 'package:ministore/src/utils/util.dart' as utils;
 
 class ItemPage extends StatefulWidget {
@@ -14,7 +15,7 @@ class ItemPage extends StatefulWidget {
 
 class _ItemPageState extends State<ItemPage> {
 
-  ItemProvider itemProvider = new ItemProvider();
+  ItemBloc itemBloc;
 
   ItemModel itemModel = new ItemModel();
   File photo;
@@ -26,6 +27,8 @@ class _ItemPageState extends State<ItemPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    itemBloc = Provider.itemsBloc(context);
 
     // Received item
     final ItemModel itemTemp = ModalRoute.of(context).settings.arguments;
@@ -144,18 +147,18 @@ class _ItemPageState extends State<ItemPage> {
     });
 
     if ( photo != null ){
-      final imageURL =  await itemProvider.uploadImage(photo);
+      final imageURL =  await itemBloc.uploadPhoto(photo);
       itemModel.photoUrl = imageURL;
       print(imageURL);
     }
 
     if ( itemModel.id == null ){
 
-      itemProvider.createItem(itemModel);
+      itemBloc.addItem(itemModel);
       showSnackBar('El producto de creó con éxito');
     }
     else{
-      itemProvider.updateItem(itemModel);
+      itemBloc.editItem(itemModel);
       showSnackBar('El producto de actualizó con éxito');
     }
 
@@ -186,11 +189,14 @@ class _ItemPageState extends State<ItemPage> {
       );
     }
     else{
-      return Image(
-        image: AssetImage( photo?.path ?? 'assets/no-image.png'),
-        height: 300.0,
-        fit: BoxFit.cover,
-      );
+      if ( photo != null )
+        return Image.file(photo);
+      else
+        return Image(
+          image: AssetImage('assets/no-image.png'),
+          height: 300.0,
+          fit: BoxFit.cover,
+        );
     }
   }
 

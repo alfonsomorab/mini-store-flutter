@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:ministore/src/blocs/provider.dart';
 import 'package:ministore/src/models/item_model.dart';
-import 'package:ministore/src/providers/item_provider.dart';
 
 class HomePage extends StatelessWidget {
 
-  final itemProvider = new ItemProvider();
+  final itemsBloc = new ItemBloc();
 
   @override
   Widget build(BuildContext context) {
 
-    final bloc = Provider.of(context);
+    //  final bloc = Provider.of(context);
+    itemsBloc.loadItems();
 
     return Scaffold(
       appBar: AppBar(
@@ -22,10 +22,9 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _createBody(){
-
-    return FutureBuilder(
-      future: itemProvider.getItems(),
-      builder: (BuildContext context, AsyncSnapshot<List<ItemModel>> snapshot) {
+    return StreamBuilder(
+      stream: itemsBloc.itemsStream,
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           if (snapshot.data != null) {
             final items = snapshot.data;
@@ -41,7 +40,8 @@ class HomePage extends StatelessWidget {
           }
         }
         return Container();
-      }
+      },
+
     );
   }
   
@@ -76,9 +76,7 @@ class HomePage extends StatelessWidget {
         onTap: () => Navigator.pushNamed(context, 'item', arguments: item),
 
       ),
-      onDismissed: ( direction ){
-        itemProvider.deleteItem(item.id);
-      },
+      onDismissed: ( direction ) => itemsBloc.deleteItem( item.id )
     );
   }
 
